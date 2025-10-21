@@ -1,33 +1,83 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import icons from "@/constants/icons";
+import { Tabs } from "expo-router";
+import React from "react";
+import { Image, ImageSourcePropType, Platform, Text, useColorScheme, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+const TabIcon = ({
+  focused,
+  icon,
+  title,
+}: {
+  focused: boolean;
+  icon: ImageSourcePropType;
+  title: string;
+}) => (
+  <View className="flex-1 mt-1 flex flex-col items-center justify-center min-w-[50px]">
+    <Image
+      source={icon}
+      tintColor={focused ? "#008000" : "#666876"}
+      resizeMode="contain"
+      className="size-6"
+    />
+    <Text
+      className={`${
+        focused ? "text-green-700 font-rubik-medium" : "text-black-200 font-rubik"
+      } text-[10px] text-center mt-1`}
+      numberOfLines={1}
+    >
+      {title}
+    </Text>
+  </View>
+);
 
-export default function TabLayout() {
+export default function TabsLayout() {
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const insets = useSafeAreaInsets(); 
 
-  return (
+    return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: "white",
+          borderTopColor: "#E0E0E0",
+          borderTopWidth: 1,
+          height: Platform.OS === "ios" ? 80 + insets.bottom : 60 + insets.bottom,
+          paddingBottom: insets.bottom || 10,
+          paddingTop: 6,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Home",
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} icon={icons.home} title="Home" />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="map"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "Map",
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} icon={icons.map} title="Map" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="plant"
+        options={{
+          title: "Plant",
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} icon={icons.plant} title="Plant" />
+          ),
         }}
       />
     </Tabs>
